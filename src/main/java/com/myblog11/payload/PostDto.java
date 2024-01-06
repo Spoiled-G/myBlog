@@ -1,27 +1,20 @@
-package com.myblog11.entity;
+package com.myblog11.payload;
 
-
-import jakarta.persistence.*;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Generated;
 import lombok.NoArgsConstructor;
 
-@Entity
-@Table(name = "posts")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Post {
+public class PostDto {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     private String description;
 
     private String content;
-
-    private String title;
 
     public long getId() {
         return id;
@@ -54,4 +47,6 @@ public class Post {
     public void setTitle(String title) {
         this.title = title;
     }
+
+    private String title;
 }
