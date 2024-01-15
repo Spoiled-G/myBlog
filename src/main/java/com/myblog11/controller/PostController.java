@@ -4,18 +4,15 @@ import com.myblog11.payload.PostDto;
 import com.myblog11.service.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/post")
-public class Postcontroller {
+public class PostController {
 
 private PostService postService;
 
-    public Postcontroller(PostService postService) {
+    public PostController(PostService postService) {
         this.postService = postService;
     }
 
@@ -24,6 +21,14 @@ private PostService postService;
 
         PostDto dto = postService.createPost(postDto);
         return new ResponseEntity<>(dto, HttpStatus.CREATED);
+    }
+
+    //http://localhost:8080/api/posts?id=1
+    @GetMapping
+    public ResponseEntity<PostDto> getPostById(@RequestParam long id){
+        PostDto dto = postService.getPostByID(id);
+        return new ResponseEntity<>(dto,HttpStatus.OK);
+
     }
 }
 

@@ -4,4 +4,6 @@ import com.myblog11.payload.PostDto;
 
 public interface PostService {
     PostDto createPost(PostDto postDto);
+
+    PostDto getPostByID(long id);
 }
