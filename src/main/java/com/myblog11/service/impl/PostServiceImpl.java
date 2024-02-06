@@ -5,9 +5,11 @@ import com.myblog11.exception.ResourceNotFoundException;
 import com.myblog11.payload.PostDto;
 import com.myblog11.repository.PostRepository;
 import com.myblog11.service.PostService;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,8 +20,11 @@ public class PostServiceImpl implements PostService {
 
     private PostRepository postRepository;
 
-    public PostServiceImpl(PostRepository postRepository) {
+    private ModelMapper modelMapper;
+
+    public PostServiceImpl(PostRepository postRepository,ModelMapper modelMapper) {
         this.postRepository = postRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -51,18 +56,15 @@ public class PostServiceImpl implements PostService {
        Post post = postRepository.findById(id).orElseThrow(
                ()-> new ResourceNotFoundException("Post not found with id:"+id)
        );
-        PostDto dto = new PostDto();
-        dto.setId(post.getId());
-        dto.setTitle(post.getTitle());
-        dto.setDescription(post.getDescription());
-        dto.setContent(post.getContent());
+        PostDto dto = mapToDto(post);
 
         return dto;
     }
 
     @Override
-    public List<PostDto> getAllPost(int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo,pageSize);
+    public List<PostDto> getAllPost(int pageNo, int pageSize, String sortBy, String sortDir) {
+        Sort sort = (sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(pageNo,pageSize, sort);
         Page<Post> pagePost = postRepository.findAll(pageable);
 
         List<Post> content = pagePost.getContent();
@@ -73,22 +75,26 @@ public class PostServiceImpl implements PostService {
 
     PostDto mapToDto(Post post) {
 
-        PostDto dto = new PostDto();
+        PostDto dto = modelMapper.map(post, PostDto.class);
 
-        dto.setTitle(post.getTitle());
-        dto.setDescription(post.getDescription());
-        dto.setContent(post.getContent());
+//        PostDto dto = new PostDto();
+//
+//        dto.setTitle(post.getTitle());
+//        dto.setDescription(post.getDescription());
+//        dto.setContent(post.getContent());
         return dto;
 
     }
 
     Post mapToEntity(PostDto postDto){
 
-        Post post = new Post();
+        Post post = modelMapper.map(postDto, Post.class);
 
-        post.setTitle(postDto.getTitle());
-        post.setDescription(postDto.getDescription());
-        post.setContent(postDto.getContent());
+//        Post post = new Post();
+//
+//        post.setTitle(postDto.getTitle());
+//        post.setDescription(postDto.getDescription());
+//        post.setContent(postDto.getContent());
         return post;
 
     }

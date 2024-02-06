@@ -9,5 +9,5 @@ public interface PostService {
 
     PostDto getPostByID(long id);
 
-    List<PostDto> getAllPost(int pageNo, int pageSize);
+    List<PostDto> getAllPost(int pageNo, int pageSize, String sortBy, String sortDir);
 }

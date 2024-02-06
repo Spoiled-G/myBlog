@@ -1,27 +1,27 @@
 package com.myblog11.entity;
 
-
 import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Generated;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "posts")
+@Table(name = "comments")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Post {
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private String description;
+    private String text;
 
-    private String content;
+    private String email;
 
-    private String title;
+    @ManyToOne
+    @JoinColumn(name = "post_id")
+    private Post post;
 
 
 }

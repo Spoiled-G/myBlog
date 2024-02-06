@@ -1,6 +1,5 @@
 package com.myblog11.payload;
 
-import javax.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,14 +7,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostDto {
-    @Id
+public class CommentDto {
+
     private long id;
 
-    private String description;
+    private String text;
 
-    private String content;
+    private String email;
 
-
-    private String title;
 }
