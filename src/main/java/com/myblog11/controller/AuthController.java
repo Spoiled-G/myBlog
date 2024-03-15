@@ -2,10 +2,12 @@ package com.myblog11.controller;
 
 import com.myblog11.entity.Role;
 import com.myblog11.entity.User;
+import com.myblog11.payload.JWTAuthResponse;
 import com.myblog11.payload.LoginDto;
 import com.myblog11.payload.SignUpDto;
 import com.myblog11.repository.RoleRepository;
 import com.myblog11.repository.UserRepository;
+import com.myblog11.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +40,8 @@ public class AuthController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-
+    @Autowired
+    private JwtTokenProvider tokenProvider;
 
 
     @PostMapping("/signup")
@@ -71,20 +74,25 @@ public class AuthController {
 
     }
 
+
+
     @PostMapping("/signin")
-    public ResponseEntity<String> authenticateUser(@RequestBody LoginDto loginDto){
-        try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginDto.getUsernameOrEmail(), loginDto.getPassword())
-            );
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            return new ResponseEntity<>("User signed-in successfully!", HttpStatus.OK);
-        } catch (AuthenticationException e) {
-            return new ResponseEntity<>("Incorrect username or password", HttpStatus.UNAUTHORIZED);
-        }
+    public ResponseEntity<JWTAuthResponse> authenticateUser(@RequestBody LoginDto loginDto){
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                loginDto.getUsernameOrEmail(), loginDto.getPassword()));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        // get token form tokenProvider
+        String token = tokenProvider.generateToken(authentication);
+
+        return ResponseEntity.ok(new JWTAuthResponse(token));
     }
 
+
 }
+
+
 
 
 
